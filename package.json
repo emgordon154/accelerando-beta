@@ -1,11 +1,12 @@
 {
-  "name": "spark",
-  "version": "0.0.0",
-  "description": "",
+  "name": "Accelerando",
+  "version": "0.0.2",
+  "description": "An accelerating asteroid-avoidance game with algorithmically-generated music",
   "main": "index.js",
   "scripts": {
     "postinstall": "cd functions && npm install",
-    "prepare": "firebase use --add && echo 'module.exports = firebase =>' > fire/setup.js && npx firebase setup:web >> fire/setup.js",
+    "prepare": "firebase use --add",
+    "do-not-run": "firebase use --add && echo 'module.exports = firebase =>' > fire/setup.js && npx firebase setup:web >> fire/setup.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node dev",
     "build": "webpack -p",
@@ -16,7 +17,7 @@
     "deploy": "npm run build-prod && npx firebase deploy"
   },
   "keywords": [],
-  "author": "Ashi Krishnan <hi@ashi.io>",
+  "author": "Emily Gordon, with React&Firebase boilerplate code by Ashi Krishnan <hi@ashi.io>",
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.26.0",

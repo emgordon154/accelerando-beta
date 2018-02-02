@@ -1,1 +1,4 @@
-throw new Error('fire/setup.js does not contain a config. You need to run `npm prepare`')
+require('~/secrets')
+
+module.exports = firebase => firebase.initializeApp(process.ENV.firebaseSettings)
+
