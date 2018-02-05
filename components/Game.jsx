@@ -1,12 +1,25 @@
 import React from 'react'
 
-import game from '~/game'
+import createGame from '~/game'
+import { auth } from '~/fire'
 
-const Game = () => (
-  <div>
-    <h1>this is the game page</h1>
-    <div id="phaser-game" />
-  </div>
-)
+class Game extends React.Component {
+  constructor() {
+    super()
+    this.state = {loggedIn: false}
+    auth.onAuthStateChanged(user => {
+      this.setState({loggedIn: !!user})
+      // console.log('logged in?', this.state.loggedIn)
+    })
+  }
+
+  componentDidUpdate () {
+    if (this.state.loggedIn) createGame()
+  }
+
+  render() {
+    return <div id="phaser-game" />
+  }
+}
 
 export default Game

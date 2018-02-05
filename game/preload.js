@@ -1,8 +1,9 @@
-import {storage} from '~/fire'
+// import {storage} from '~/fire'
 
-import Promise from 'bluebird'
+// import Promise from 'bluebird'
+// import Axios from 'axios'
 
-const storageRef = storage.ref()
+// const storageRef = storage.ref()
 
 function preload(game) { }
 
@@ -17,10 +18,16 @@ preload.prototype = {
       'explosion' // https://opengameart.org/content/explosion
     ]
 
-    const assetLoaders = Promise.map(assetNames, assetName => (
-      storageRef.child(`${assetName}.png`).getDownloadURL()
-        .then(url => this.game.load.image(assetName, url))
-    ))
+    assetNames.forEach(assetName => this.game.load.image(assetName, `/img/${assetName}.png`))
+
+    // return Promise.map(assetNames, assetName => (
+    //   storageRef.child(`${assetName}.png`).getDownloadURL()
+    //     .then(url => {
+    //       console.log(this.game, assetName, url)
+    //       return this.game.load.image(assetName, url)
+    //     })
+    // ))
+    //   .then(() => this.game.state.start('Main menu'))
   },
 
   create() {

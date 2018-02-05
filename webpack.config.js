@@ -1,4 +1,4 @@
-'use strict'
+"use strict"
 const webpack = require('webpack')
     , babel = require('./babel.config')
     , {isHot, isProd} = require('./env.config')

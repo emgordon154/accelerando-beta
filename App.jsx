@@ -15,7 +15,7 @@ class App extends React.Component {
 
     auth.onAuthStateChanged(user => {
         this.setState({loggedIn: !!user})
-        console.log('logged in?', this.state.loggedIn)
+        // console.log('logged in?', this.state.loggedIn)
     })
 
     this.uiConfig = {
@@ -36,7 +36,7 @@ class App extends React.Component {
   }
 
   render() {
-    console.log(auth)
+    // console.log(auth)
     return this.state.loggedIn
       ? <div>
           <Navbar />
