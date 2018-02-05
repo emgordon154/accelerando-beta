@@ -47,6 +47,7 @@
     "react-firebaseui": "^1.0.10",
     "react-router-dom": "^4.2.2",
     "reactfire": "^1.0.0",
-    "style-loader": "^0.20.1"
+    "style-loader": "^0.20.1",
+    "tone": "^0.11.11"
   }
 }

@@ -9,11 +9,11 @@ import ingame from './ingame'
 function createGame () {
   const game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-game')
 
-  game.state.add('Preload', preload)
+  // game.state.add('Preload', preload)
   game.state.add('Main menu', mainMenu)
   game.state.add('In game', ingame)
 
-  game.state.start('Preload')
+  game.state.start('Main menu')
 
   return game
 }

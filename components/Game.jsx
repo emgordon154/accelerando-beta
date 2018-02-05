@@ -14,6 +14,7 @@ class Game extends React.Component {
   }
 
   componentDidUpdate () {
+    // console.log('game component updated')
     if (this.state.loggedIn && !this.state.game) this.setState({game: createGame()})
   }
 

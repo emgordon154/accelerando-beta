@@ -1,0 +1,8 @@
+export {default as bass} from './bass'
+export {default as kick} from './kick'
+export {snareHit, snareNoise} from './snare'
+export {default as hihat} from './hihat'
+export {default as guitar1} from './guitar1'
+export {default as guitar2} from './guitar2'
+export {default as pad} from './pad'
+export {default as square} from './square'

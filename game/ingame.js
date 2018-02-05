@@ -6,6 +6,32 @@ function ingame(game) { }
 ingame.prototype = {
   preload () {
       const game = this.game
+
+      const assetNames = [
+        'space', // https://opengameart.org/content/space-backdrop
+        'spaceship', // https://opengameart.org/content/space-ships-side-scroller
+        'tiny-ast', // https://opengameart.org/content/2d-asteroid-sprite
+        'med-ast', // https://opengameart.org/content/2d-asteroid-sprite
+        'big-ast', // https://opengameart.org/content/2d-asteroid-sprite
+        'explosion' // https://opengameart.org/content/explosion
+      ]
+  
+      assetNames.forEach(assetName => game.load.image(assetName, `/img/${assetName}.png`))
+  },
+  create () {
+    const game = this.game
+
+    game.physics.startSystem(Phaser.Physics.ARCADE)
+
+      gv.startVelocity = -5 // 5 px/s left
+      gv.maxVelocity = -1200
+      gv.tMax = 90 // 120 seconds to max velocity
+      gv.acceleration = (gv.maxVelocity - gv.startVelocity) / gv.tMax
+    
+      // // playTitleMusic()
+      // gv.guitarOn = false
+      // gv.hatOn = false
+  
     // playIngameMusic()
       // stopTitleMusic()
       // beginPsytrance()
@@ -13,6 +39,7 @@ ingame.prototype = {
       // title.kill()
       // startText.kill()
       gv.currentVelocity = gv.startVelocity
+      gv.background = game.add.tileSprite(0, 0, 800, 600, 'space')
       gv.background.autoScroll(gv.currentVelocity, 0) // background moves left at 5px/s
       gv.startTime = Date.now()
       gv.secondsElapsed = 0
@@ -23,6 +50,12 @@ ingame.prototype = {
         boundsAlignH: 'right'
       })
       gv.scoreDisplay.setTextBounds(0, 0, 800, 600)
+
+      gv.asteroids = game.add.group()
+      gv.asteroids.enableBody = true
+    
+      gv.explosion = game.add.sprite(800,600, 'explosion')
+      gv.explosion.animations.add('boom', [15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0], 10, false)
   
       // bpmAccel = (maxBPM - Tone.Transport.bpm.value) / tMax
       // console.log(bpmAccel)
@@ -32,9 +65,6 @@ ingame.prototype = {
       //   boundsAlignH: 'left'
       // })
       // bpmDisplay.setTextBounds(0, 0, 800, 600)
-  },
-  create () {
-    const game = this.game
 
     gv.player = game.add.sprite(32, 300, 'spaceship')
     game.physics.arcade.enable(gv.player)
@@ -62,7 +92,7 @@ ingame.prototype = {
       // Tone.Transport.bpm.rampTo(Tone.Transport.bpm.value + bpmAccel, 1)
       // bpmDisplay.setText(`BPM: ${Tone.Transport.bpm.value.toFixed(1)}`)
   
-      // bigAsteroid()
+      bigAsteroid()
   
       // if (Tone.Transport.bpm.value > 130) tinyAsteroids()
     }
@@ -73,3 +103,13 @@ ingame.prototype = {
 }
 
 export default ingame
+
+function bigAsteroid () {
+  let astSprite = ['med-ast', 'big-ast'][Math.random()*2|0]
+  let astY = 50 + Math.random()*700 | 0
+  let asteroid = gv.asteroids.create(800, astY, astSprite)
+  asteroid.body.velocity.x = 20 + gv.currentVelocity * Math.random()
+  asteroid.body.velocity.y = Math.random() * 100 - Math.random() * 100
+  asteroid.outOfBoundsKill = true
+  asteroid.rotation = Math.random() - Math.random()
+}

@@ -1,3 +1,5 @@
+// this file is not needed, it's only here because i'm afraid to delete stuff in case it turns out i do need it
+
 // import {storage} from '~/fire'
 
 // import Promise from 'bluebird'
