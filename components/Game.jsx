@@ -14,7 +14,12 @@ class Game extends React.Component {
   }
 
   componentDidUpdate () {
-    if (this.state.loggedIn) createGame()
+    if (this.state.loggedIn && !this.state.game) this.setState({game: createGame()})
+  }
+
+  componentWillUnmount () {
+    if (this.state.game) this.state.game.destroy()
+    this.setState({game: null})
   }
 
   render() {
