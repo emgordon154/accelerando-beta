@@ -1,7 +1,12 @@
 import React from 'react'
 
+import game from '~/game'
+
 const Game = () => (
-  <h1>this is the game page</h1>
+  <div>
+    <h1>this is the game page</h1>
+    <div id="phaser-game" />
+  </div>
 )
 
 export default Game

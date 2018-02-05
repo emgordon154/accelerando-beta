@@ -3,6 +3,13 @@ const webpack = require('webpack')
     , babel = require('./babel.config')
     , {isHot, isProd} = require('./env.config')
 
+const path = require('path')
+
+const phaserModule = path.join(__dirname, '/node_modules/phaser-ce/')
+const phaser = path.join(phaserModule, 'build/custom/phaser-split.js')
+const pixi = path.join(phaserModule, 'build/custom/pixi.js')
+const p2 = path.join(phaserModule, 'build/custom/p2.js')
+
 const config = env => ({
   entry: entries(env, './main.js'),
   output: {
@@ -36,7 +43,11 @@ const config = env => ({
     {
       test: /\.(txt|md|markdown)$/,
       use: 'raw-loader',
-    }]
+    },
+    { test: /pixi\.js/, use: ['expose-loader?PIXI'] },
+    { test: /phaser-split\.js$/, use: ['expose-loader?Phaser'] },
+    { test: /p2\.js/, use: ['expose-loader?p2'] }
+  ]
   },
   plugins: plugins(env),
 })

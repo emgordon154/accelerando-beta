@@ -1,16 +1,40 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+import {auth} from '~/fire'
 
-const Navbar = () => (
-  <nav>
-      <Link to="/" className="navlink">
-        Game
-      </Link>
-      <Link to="/about" className="navlink">
-        About
-      </Link>
-  </nav>
-)
+function signOut () {
+  auth.signOut()
+    .then(() => console.log('signed out successfully'))
+    .catch(err => console.error(err))
+}
+
+class Navbar extends React.Component {
+  constructor(){
+    super()
+
+    this.state = {loggedIn: false}
+
+    auth.onAuthStateChanged(user => {
+        this.setState({loggedIn: !!user})
+        console.log('logged in?', this.state.loggedIn)
+    })
+  }
+  render () {
+    return (
+      <nav>
+          <Link to="/" className="navlink">
+            Game
+          </Link>
+          <Link to="/about" className="navlink">
+            About
+          </Link>
+          <a onClick={signOut} className="navlink">
+            Sign out
+          </a>
+      </nav>
+    )
+  }
+}
 
 export default Navbar
