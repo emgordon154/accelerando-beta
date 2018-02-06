@@ -80,6 +80,7 @@ const titleMusic = new Tone.Loop(time => {
 }, loopLength)
 
 export function playTitleMusic() {
+  Tone.Master.mute = false
   Tone.Transport.stop()
   Tone.Transport.position = 0
   Tone.Transport.timeSignature = 4

@@ -79,7 +79,7 @@ ingame.prototype = {
 
     gv.hitAsteroid = game.physics.arcade.collide(gv.player, gv.asteroids)
     if (gv.hitAsteroid) {
-      gameOver()
+      gameOver(game)
     }
 
     if (gv.player.alive && Date.now() - gv.startTime > gv.secondsElapsed * 1000) {
@@ -130,11 +130,19 @@ function tinyAsteroids () {
   }
 }
 
-function gameOver() {
+function gameOver(game) {
   gv.explosion.x = gv.player.x
   gv.explosion.y = gv.player.y
   gv.explosion.play('boom')
   gv.player.kill()
   stopPsytrance()
   Tone.Transport.mute = true
+
+  gv.gameOverText = game.add.text(0, 300, 'GAME OVER', {
+    boundsAlignH: 'center',
+    font: '24pt Monaco',
+    fill: 'white'
+  }).setTextBounds(0, 0, 800, 600)
+
+  setTimeout(() => game.state.start('Main menu'), 1500)
 }
