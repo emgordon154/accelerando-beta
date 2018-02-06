@@ -82,12 +82,14 @@ const titleMusic = new Tone.Loop(time => {
 export function playTitleMusic() {
   Tone.Master.mute = false
   Tone.Transport.stop()
+  Tone.Transport.cancel()
   Tone.Transport.position = 0
   Tone.Transport.timeSignature = 4
   Tone.Transport.swing = .2
   Tone.Transport.bpm.value = titleBPM
   Tone.Transport.loop = true
   Tone.Transport.loopEnd = loopLength
+  titleMusic.mute = false
   titleMusic.start('1m').stop(loopLength)
   Tone.Transport.start()
 }

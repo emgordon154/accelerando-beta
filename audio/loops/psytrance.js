@@ -89,6 +89,7 @@ export function beginPsytrance() {
     })
   hatLoop.mute = true
   guitarLoop.mute = true
+  Tone.Master.mute = false
   Tone.Transport.start()
 }
 
