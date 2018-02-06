@@ -136,7 +136,7 @@ function gameOver(game) {
   gv.explosion.play('boom')
   gv.player.kill()
   stopPsytrance()
-  Tone.Transport.mute = true
+  Tone.Master.mute = true
 
   gv.gameOverText = game.add.text(0, 300, 'GAME OVER', {
     boundsAlignH: 'center',
