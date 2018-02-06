@@ -4,7 +4,7 @@ import { Tone } from '../'
 import { bass, kick, snareHit, snareNoise, hihat, guitar1, guitar2, pad } from '../instruments'
 
 
-const startBpm = 70
+export const startBpm = 70
 const loopLength = '4m'
 
 const bassLoop = new Tone.Loop(function (time) {

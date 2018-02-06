@@ -2,7 +2,7 @@ import gameVariables from './variables'
 var gv = gameVariables
 
 import {Tone} from '~/audio'
-import {beginPsytrance, addGuitar, addHat, stopPsytrance} from '~/audio/loops'
+import {startBpm, beginPsytrance, addGuitar, addHat, stopPsytrance} from '~/audio/loops'
 
 function ingame(game) { }
 
@@ -35,18 +35,11 @@ ingame.prototype = {
 
     game.physics.startSystem(Phaser.Physics.ARCADE)
 
-    gv.startVelocity = -5 // 5 px/s left
-    gv.maxVelocity = -1200
-    gv.tMax = 20 // 120 seconds to max velocity
-    gv.acceleration = (gv.maxVelocity - gv.startVelocity) / gv.tMax
-    gv.currentVelocity = gv.startVelocity
-    gv.score = 0
-
+    resetProgress()
 
     gv.background = game.add.tileSprite(0, 0, 800, 600, 'space')
     gv.background.autoScroll(gv.currentVelocity, 0) // background moves left at 5px/s
     gv.startTime = Date.now()
-    gv.secondsElapsed = 0
     gv.scoreDisplay = game.add.text(0, 550, `SCORE: ${gv.score} `, {
       font: '12pt Monaco',
       fill: 'white',
@@ -60,9 +53,6 @@ ingame.prototype = {
     gv.explosion = game.add.sprite(800,600, 'explosion')
     gv.explosion.animations.add('boom', [15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0], 10, false)
 
-    gv.maxBPM = 140
-    gv.bpmAccel = (gv.maxBPM - Tone.Transport.bpm.value) / gv.tMax
-    console.log(gv.bpmAccel)
     gv.bpmDisplay = game.add.text(0, 0, `BPM: ${Tone.Transport.bpm.value} `, {
       font: '12pt Monaco',
       fill: 'white',
@@ -104,6 +94,9 @@ ingame.prototype = {
 
     gv.player.body.velocity.x = 400 * (gv.cursors.right.isDown - gv.cursors.left.isDown)
     gv.player.body.velocity.y = 300 * (gv.cursors.down.isDown - gv.cursors.up.isDown) // lmao "up.isDown"
+  },
+  shutdown () {
+    resetProgress()
   }
 }
 
@@ -130,6 +123,20 @@ function tinyAsteroids () {
   }
 }
 
+function resetProgress() {
+  gv.startVelocity = -5 // 5 px/s left
+  gv.maxVelocity = -1200
+  gv.tMax = 20 // 120 seconds to max velocity
+  gv.acceleration = (gv.maxVelocity - gv.startVelocity) / gv.tMax
+  gv.currentVelocity = gv.startVelocity
+  gv.score = 0
+  gv.secondsElapsed = 0
+  Tone.Transport.bpm.value = startBpm
+  gv.maxBPM = 140
+  gv.bpmAccel = (gv.maxBPM - Tone.Transport.bpm.value) / gv.tMax
+
+}
+
 function gameOver(game) {
   gv.explosion.x = gv.player.x
   gv.explosion.y = gv.player.y
@@ -137,12 +144,14 @@ function gameOver(game) {
   gv.player.kill()
   stopPsytrance()
   Tone.Master.mute = true
-
+  Tone.Transport.bpm.value = startBpm
   gv.gameOverText = game.add.text(0, 300, 'GAME OVER', {
     boundsAlignH: 'center',
     font: '24pt Monaco',
     fill: 'white'
   }).setTextBounds(0, 0, 800, 600)
 
-  setTimeout(() => game.state.start('Main menu'), 1500)
+  resetProgress()
+
+  setTimeout(() => game.state.start('Leaderboard'), 1500)
 }
