@@ -38,12 +38,12 @@ leaderboard.prototype = {
     }).setTextBounds(0, 0, 800, 600)
 
     gv.leaderboard = database.ref('/scores').once('value')
-      .then(snapshot => Object.entries(snapshot.val()))
-      .then(unsortedScores => unsortedScores.sort(([nameA, scoreA], [nameB, scoreB]) => scoreB - scoreA))
+      .then(snapshot => Object.values(snapshot.val()))
+      .then(unsortedScores => unsortedScores.sort((entry1, entry2) => entry2.score - entry1.score))
       .then(highScores => {
         leaderboardPlaceholder.destroy()
         return highScores.map((entry, position) => {
-          const [name, score] = entry
+          const {name, score} = entry
           const y = 200 + 40 * position
           game.add.text(200, y,`${position + 1}. ${name}`, { // The leaderboard ain't an array; it starts at 1 :)
             boundsAlignH: 'left',
