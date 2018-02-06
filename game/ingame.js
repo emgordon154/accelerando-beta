@@ -25,7 +25,7 @@ ingame.prototype = {
       ]
 
       spritesheetNames.forEach(spritesheetName =>
-        game.load.spritesheet(`${spritesheetName}`, `/assets/${spritesheetName}.png`, 64, 64)
+        game.load.spritesheet(`${spritesheetName}`, `/img/${spritesheetName}.png`, 64, 64)
       )
   },
   create () {
@@ -39,14 +39,14 @@ ingame.prototype = {
     gv.maxVelocity = -1200
     gv.tMax = 20 // 120 seconds to max velocity
     gv.acceleration = (gv.maxVelocity - gv.startVelocity) / gv.tMax
-  
-
     gv.currentVelocity = gv.startVelocity
+    gv.score = 0
+
+
     gv.background = game.add.tileSprite(0, 0, 800, 600, 'space')
     gv.background.autoScroll(gv.currentVelocity, 0) // background moves left at 5px/s
     gv.startTime = Date.now()
     gv.secondsElapsed = 0
-    gv.score = 0
     gv.scoreDisplay = game.add.text(0, 550, `SCORE: ${gv.score} `, {
       font: '12pt Monaco',
       fill: 'white',

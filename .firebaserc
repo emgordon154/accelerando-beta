@@ -1,5 +1,6 @@
 {
   "projects": {
-    "accelerando": "accelerando-5d617"
+    "accelerando": "accelerando-5d617",
+    "default": "accelerando-5d617"
   }
 }
