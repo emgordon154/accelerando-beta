@@ -31,6 +31,8 @@ ingame.prototype = {
   create () {
     const game = this.game
 
+    beginPsytrance()
+
     game.physics.startSystem(Phaser.Physics.ARCADE)
 
     gv.startVelocity = -5 // 5 px/s left
@@ -38,7 +40,6 @@ ingame.prototype = {
     gv.tMax = 20 // 120 seconds to max velocity
     gv.acceleration = (gv.maxVelocity - gv.startVelocity) / gv.tMax
   
-    beginPsytrance()
 
     gv.currentVelocity = gv.startVelocity
     gv.background = game.add.tileSprite(0, 0, 800, 600, 'space')
@@ -78,12 +79,7 @@ ingame.prototype = {
 
     gv.hitAsteroid = game.physics.arcade.collide(gv.player, gv.asteroids)
     if (gv.hitAsteroid) {
-      gv.explosion.x = gv.player.x
-      gv.explosion.y = gv.player.y
-      gv.explosion.play('boom')
-      gv.player.kill()
-      stopPsytrance()
-      Tone.Transport.mute = true
+      gameOver()
     }
 
     if (gv.player.alive && Date.now() - gv.startTime > gv.secondsElapsed * 1000) {
@@ -132,4 +128,13 @@ function tinyAsteroids () {
     asteroid.outOfBoundsKill = true
     asteroid.rotation = Math.random() - Math.random()
   }
+}
+
+function gameOver() {
+  gv.explosion.x = gv.player.x
+  gv.explosion.y = gv.player.y
+  gv.explosion.play('boom')
+  gv.player.kill()
+  stopPsytrance()
+  Tone.Transport.mute = true
 }
