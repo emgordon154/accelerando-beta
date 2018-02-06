@@ -86,24 +86,20 @@ ingame.prototype = {
       Tone.Transport.mute = true
     }
 
-    if (gv.player.alive && gv.secondsElapsed < gv.tMax && Date.now() - gv.startTime > gv.secondsElapsed * 1000) {
+    if (gv.player.alive && Date.now() - gv.startTime > gv.secondsElapsed * 1000) {
       gv.secondsElapsed++
-      gv.currentVelocity += gv.acceleration // sorry about the confusing signs :/
+
+      if (gv.secondsElapsed < gv.tMax) {
+        gv.currentVelocity += gv.acceleration // sorry about the confusing signs :/
+        gv.background.autoScroll(gv.currentVelocity, 0)
+        Tone.Transport.bpm.rampTo(Tone.Transport.bpm.value + gv.bpmAccel, 1)
+      }
+      gv.bpmDisplay.setText(`BPM: ${Tone.Transport.bpm.value.toFixed(1)}`)
       gv.score -= gv.currentVelocity
       gv.scoreDisplay.setText(`SCORE: ${gv.score|0} `) // round to integer
-      // console.log(secondsElapsed + ' s,', 'v = ' + -currentVelocity)
-      gv.background.autoScroll(gv.currentVelocity, 0)
-  
-      Tone.Transport.bpm.rampTo(Tone.Transport.bpm.value + gv.bpmAccel, 1)
-      gv.bpmDisplay.setText(`BPM: ${Tone.Transport.bpm.value.toFixed(1)}`)
-  
+
       bigAsteroid()
   
-      if (Tone.Transport.bpm.value > 130) tinyAsteroids()
-    }
-
-    if (gv.player.alive && gv.secondsElapsed >= gv.tMax && Date.now() - gv.startTime > gv.secondsElapsed * 1000) {
-      gv.secondsElapsed++
       if (Tone.Transport.bpm.value > 130) tinyAsteroids()
     }
     
