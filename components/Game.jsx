@@ -1,6 +1,7 @@
 import React from 'react'
 
 import createGame from '~/game'
+import {Tone} from '~/audio'
 import { auth } from '~/fire'
 
 class Game extends React.Component {
@@ -19,6 +20,9 @@ class Game extends React.Component {
   }
 
   componentWillUnmount () {
+    Tone.Master.mute = true
+    Tone.Transport.stop()
+    Tone.Transport.cancel()
     if (this.state.game) this.state.game.destroy()
     this.setState({game: null})
   }

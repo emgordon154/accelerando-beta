@@ -93,7 +93,7 @@ export function beginPsytrance() {
 }
 
 export function stopPsytrance() {
-  Tone.Transport.stop()
+  Tone.Transport.stop();
   [bassLoop, hatLoop, drumLoop, padLoop, hatLoop]
     .forEach(subloop => {
       subloop.stop()

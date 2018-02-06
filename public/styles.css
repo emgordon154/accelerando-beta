@@ -47,16 +47,16 @@ nav:hover {
   text-shadow: 12px 12px 3 #0c3150;
 }
 
-                  /* #title {
-                    text-align: center;
-                    z-index: 999;
-                  }
-                  
-                  #game-container {
-                    height: 100vh;
-                    width: 100vw;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    z-index: -1;
-                  } */
+  /* #title {
+  text-align: center;
+  z-index: 999;
+} */
+
+#phaser-game {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: -1;
+} 

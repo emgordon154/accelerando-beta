@@ -2,7 +2,7 @@ import gameVariables from './variables'
 var gv = gameVariables
 
 import {Tone} from '~/audio'
-import {beginPsytrance, stopPsytrance} from '~/audio/loops'
+import {beginPsytrance, addGuitar, addHat, stopPsytrance} from '~/audio/loops'
 
 function ingame(game) { }
 
@@ -10,57 +10,64 @@ ingame.prototype = {
   preload () {
       const game = this.game
 
-      const assetNames = [
+      const spriteNames = [
         'space', // https://opengameart.org/content/space-backdrop
         'spaceship', // https://opengameart.org/content/space-ships-side-scroller
         'tiny-ast', // https://opengameart.org/content/2d-asteroid-sprite
         'med-ast', // https://opengameart.org/content/2d-asteroid-sprite
         'big-ast', // https://opengameart.org/content/2d-asteroid-sprite
-        'explosion' // https://opengameart.org/content/explosion
       ]
   
-      assetNames.forEach(assetName => game.load.image(assetName, `/img/${assetName}.png`))
+      spriteNames.forEach(spriteName => game.load.image(spriteName, `/img/${spriteName}.png`))
+
+      const spritesheetNames = [
+        'explosion' // https://opengameart.org/content/explosion
+      ]
+
+      spritesheetNames.forEach(spritesheetName =>
+        game.load.spritesheet(`${spritesheetName}`, `/assets/${spritesheetName}.png`, 64, 64)
+      )
   },
   create () {
     const game = this.game
 
     game.physics.startSystem(Phaser.Physics.ARCADE)
 
-      gv.startVelocity = -5 // 5 px/s left
-      gv.maxVelocity = -1200
-      gv.tMax = 90 // 120 seconds to max velocity
-      gv.acceleration = (gv.maxVelocity - gv.startVelocity) / gv.tMax
-    
-      beginPsytrance()
+    gv.startVelocity = -5 // 5 px/s left
+    gv.maxVelocity = -1200
+    gv.tMax = 20 // 120 seconds to max velocity
+    gv.acceleration = (gv.maxVelocity - gv.startVelocity) / gv.tMax
   
-      gv.currentVelocity = gv.startVelocity
-      gv.background = game.add.tileSprite(0, 0, 800, 600, 'space')
-      gv.background.autoScroll(gv.currentVelocity, 0) // background moves left at 5px/s
-      gv.startTime = Date.now()
-      gv.secondsElapsed = 0
-      gv.score = 0
-      gv.scoreDisplay = game.add.text(0, 550, `SCORE: ${gv.score} `, {
-        font: '12pt Monaco',
-        fill: 'white',
-        boundsAlignH: 'right'
-      })
-      gv.scoreDisplay.setTextBounds(0, 0, 800, 600)
+    beginPsytrance()
 
-      gv.asteroids = game.add.group()
-      gv.asteroids.enableBody = true
-    
-      gv.explosion = game.add.sprite(800,600, 'explosion')
-      gv.explosion.animations.add('boom', [15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0], 10, false)
+    gv.currentVelocity = gv.startVelocity
+    gv.background = game.add.tileSprite(0, 0, 800, 600, 'space')
+    gv.background.autoScroll(gv.currentVelocity, 0) // background moves left at 5px/s
+    gv.startTime = Date.now()
+    gv.secondsElapsed = 0
+    gv.score = 0
+    gv.scoreDisplay = game.add.text(0, 550, `SCORE: ${gv.score} `, {
+      font: '12pt Monaco',
+      fill: 'white',
+      boundsAlignH: 'right'
+    })
+    gv.scoreDisplay.setTextBounds(0, 0, 800, 600)
+
+    gv.asteroids = game.add.group()
+    gv.asteroids.enableBody = true
   
-      gv.maxBPM = 160
-      gv.bpmAccel = (gv.maxBPM - Tone.Transport.bpm.value) / gv.tMax
-      console.log(gv.bpmAccel)
-      gv.bpmDisplay = game.add.text(0, 0, `BPM: ${Tone.Transport.bpm.value} `, {
-        font: '12pt Monaco',
-        fill: 'white',
-        boundsAlignH: 'left'
-      })
-      gv.bpmDisplay.setTextBounds(0, 0, 800, 600)
+    gv.explosion = game.add.sprite(800,600, 'explosion')
+    gv.explosion.animations.add('boom', [15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0], 10, false)
+
+    gv.maxBPM = 140
+    gv.bpmAccel = (gv.maxBPM - Tone.Transport.bpm.value) / gv.tMax
+    console.log(gv.bpmAccel)
+    gv.bpmDisplay = game.add.text(0, 0, `BPM: ${Tone.Transport.bpm.value} `, {
+      font: '12pt Monaco',
+      fill: 'white',
+      boundsAlignH: 'left'
+    })
+    gv.bpmDisplay.setTextBounds(0, 0, 800, 600)
 
     gv.player = game.add.sprite(32, 300, 'spaceship')
     game.physics.arcade.enable(gv.player)
@@ -75,6 +82,8 @@ ingame.prototype = {
       gv.explosion.y = gv.player.y
       gv.explosion.play('boom')
       gv.player.kill()
+      stopPsytrance()
+      Tone.Transport.mute = true
     }
 
     if (gv.player.alive && gv.secondsElapsed < gv.tMax && Date.now() - gv.startTime > gv.secondsElapsed * 1000) {
@@ -92,6 +101,14 @@ ingame.prototype = {
   
       if (Tone.Transport.bpm.value > 130) tinyAsteroids()
     }
+
+    if (gv.player.alive && gv.secondsElapsed >= gv.tMax && Date.now() - gv.startTime > gv.secondsElapsed * 1000) {
+      gv.secondsElapsed++
+      if (Tone.Transport.bpm.value > 130) tinyAsteroids()
+    }
+    
+    if (!gv.hatOn && Tone.Transport.bpm.value > 130) addHat()
+    if (!gv.guitarOn && Tone.Transport.bpm.value > 115) addGuitar()
 
     gv.player.body.velocity.x = 400 * (gv.cursors.right.isDown - gv.cursors.left.isDown)
     gv.player.body.velocity.y = 300 * (gv.cursors.down.isDown - gv.cursors.up.isDown) // lmao "up.isDown"

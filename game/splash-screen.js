@@ -1,12 +1,9 @@
 import gameVariables from './variables'
 var gv = gameVariables
 
-import {playTitleMusic, stopTitleMusic} from '~/audio/loops'
+function splashScreen(game) { }
 
-
-function mainMenu(game) { }
-
-mainMenu.prototype = {
+splashScreen.prototype = {
   preload() {
     const assetNames = [
       'space', // https://opengameart.org/content/space-backdrop
@@ -26,28 +23,23 @@ mainMenu.prototype = {
       fill: 'white'
     })
     gv.title.setTextBounds(0, 0, 800, 600)
-    gv.startText = game.add.text(0, 400, 'press "space" when ready', {
+    gv.startText = game.add.text(0, 400, 'press "space" when ready to start the music and enter the main menu', {
       boundsAlignH: 'center',
       font: '12pt Monaco',
       fill: 'white'
     })
     gv.startText.setTextBounds(0, 0, 800, 600)
   
-    
-  
-    gv.cursors = game.input.keyboard.createCursorKeys()
     gv.spacebar = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
     game.input.keyboard.addKeyCapture(Phaser.KeyCode.SPACEBAR)
-    // console.log('spacebar:', spacebar)
-    playTitleMusic()
   },
 
   update() {
     if (gv.spacebar.justPressed()) {
-      stopTitleMusic()
-      this.game.state.start('In game')
+      gv.spacebar.reset()
+      this.game.state.start('Main menu')
     }
   }
 }
 
-export default mainMenu
+export default splashScreen
