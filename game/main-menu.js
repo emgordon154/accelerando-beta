@@ -43,13 +43,6 @@ mainMenu.prototype = {
       }).setTextBounds(0,0,800,600)
     )
 
-    // gv.startText = game.add.text(0, 400, 'press "space" when ready', {
-    //   boundsAlignH: 'center',
-    //   font: '12pt Monaco',
-    //   fill: 'white'
-    // })
-    // gv.startText.setTextBounds(0, 0, 800, 600)
-  
     gv.player = game.add.sprite(200, 400, 'spaceship')
 
     gv.selectedMenuOption = 0
@@ -57,7 +50,6 @@ mainMenu.prototype = {
     gv.cursors = game.input.keyboard.createCursorKeys()
     gv.spacebar = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
     game.input.keyboard.addKeyCapture(Phaser.KeyCode.SPACEBAR)
-    // console.log('spacebar:', spacebar)
   },
 
   update() {
