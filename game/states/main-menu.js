@@ -1,4 +1,4 @@
-import gameVariables from './variables'
+import gameVariables from '../variables'
 var gv = gameVariables
 
 import {playTitleMusic, stopTitleMusic} from '~/audio/loops'

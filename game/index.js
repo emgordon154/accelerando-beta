@@ -2,10 +2,7 @@ import PIXI from 'phaser-ce/build/custom/pixi.js'
 import p2 from 'phaser-ce/build/custom/p2.js'
 import Phaser from 'phaser-ce/build/custom/phaser-split.js'
 
-import splashScreen from './splash-screen'
-import mainMenu from './main-menu'
-import ingame from './ingame'
-import leaderboard from './leaderboard'
+import {splashScreen, mainMenu, ingame, leaderboard} from './states'
 
 function createGame () {
   const game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-game')
