@@ -90,15 +90,19 @@ ingame.prototype = {
     game.physics.arcade.enable(gv.player)
     gv.player.body.collideWorldBounds = true
 
-    if (gv.player2id) gv.player2 = game.add.sprite(32, 300, 'spaceship')
+    if (gv.player2id) {
+      gv.player2 = game.add.sprite(32, 300, 'spaceship')
+      game.physics.arcade.enable(gv.player2)
+      gv.player2.body.collideWorldBounds = true
 
-    gv.socket.on('updateOtherPlayer', ({xPos, yPos, xVel, yVel, alive}) => {
-      gv.player2.x = xPos
-      gv.player2.y = yPos
-      gv.player2.body.velocity.x = xVel
-      gv.player2.body.velocity.y = yVel
-      if (!alive) gv.player2.kill()
-    })
+      gv.socket.on('updateOtherPlayer', ({xPos, yPos, xVel, yVel, alive}) => {
+        gv.player2.x = xPos
+        gv.player2.y = yPos
+        gv.player2.body.velocity.x = xVel
+        gv.player2.body.velocity.y = yVel
+        if (!alive) gv.player2.kill()
+      })
+    }
 
     gv.frameCounter = 0
   },
@@ -122,7 +126,7 @@ ingame.prototype = {
       gv.player.body.velocity.y = 300 * (gv.cursors.down.isDown - gv.cursors.up.isDown) // lmao "up.isDown"
     }
 
-    if (gv.frameCounter % 10 == 0) // send updates six times a second?
+    if (gv.player2id && gv.frameCounter % 10 == 0) // send updates six times a second?
       sendUpdateToP2()
     
     if (gv.player.alive && gv.frameCounter % game.time.fps == 0) { // do this every second, not every frame
@@ -219,7 +223,9 @@ function submitScore() {
 function sendUpdateToP2 () {
   // player2 just needs to know your position and velocity vector... and if you're still alive
   // sending a volatile message in case player2 is not ready to receive it
-  gv.socket.volatile.to(gv.player2id).emit('updateOtherPlayer', {
+  // gv.socket.volatile.to(gv.player2id).emit('updateOtherPlayer', {
+  // apparently i have the syntax wrong for volatile messages?
+  gv.socket.emit('updateOtherPlayer', {
     xPos: gv.player.x,
     yPos: gv.player.y,
     xVel: gv.player.body.velocity.x,

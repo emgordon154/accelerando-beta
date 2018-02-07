@@ -1,3 +1,5 @@
+// this is where the socket is initialized
+
 import gameVariables from '../variables'
 var gv = gameVariables
 
@@ -14,7 +16,7 @@ mainMenu.prototype = {
 
     assetNames.forEach(assetName => this.game.load.image(assetName, `/img/${assetName}.png`))
 
-    gv.socket = io.connect()
+    gv.socket = io.connect(window.location.origin)
   },
 
   create() {
@@ -57,10 +59,12 @@ mainMenu.prototype = {
     if (gv.cursors.up.justPressed()) {
       gv.selectedMenuOption = gv.selectedMenuOption - 1
       if (gv.selectedMenuOption < 0) gv.selectedMenuOption = 2
+      console.log('selectedMenuOption: ', gv.selectedMenuOption)
     }
 
     if (gv.cursors.down.justPressed()) {
       gv.selectedMenuOption = (gv.selectedMenuOption + 1) % gv.menuOptions.length
+      console.log('selectedMenuOption: ', gv.selectedMenuOption)
     }
 
     gv.player.y = 400 + gv.selectedMenuOption * 40
@@ -72,20 +76,26 @@ mainMenu.prototype = {
           stopTitleMusic()
           gv.player2id = null
           this.game.state.start('In game') // one player
+          break
 
         case 1: // Online Multiplayer
           gv.socket.emit('playerReady')
+          console.log('playerReady signal sent')
           gv.socket.on('bothReady', otherPlayer => {
+            console.log('bothReady signal received')
             gv.player2id = otherPlayer
             this.game.state.start('In game')
           })
+          break
 
         // why are these two things triggering whenever option 1 is selected??
         // case 2:
         //   alert('not implemented')
+        //   break
 
-        // default:
-        //   alert('how did you select a non-existent menu option??')
+        default:
+          alert('how did you select a non-existent menu option??')
+          
       }
     }
   }
