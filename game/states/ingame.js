@@ -9,17 +9,17 @@ import {database} from '~/fire'
 import seed from 'seed-random'
 
 function reseedRandomness() {
-  seed(
-    'You know what they say... all toasters toast toast!', // I had to choose an arbitrary string, so I chose a meme
-    {global: true} // with this flag, Math.random() is overwritten with this seeded random function
-    // ensuring that I don't need to do any rewrites in the code below :D
+  // seed(
+  //   'You know what they say... all toasters toast toast!', // I had to choose an arbitrary string, so I chose a meme
+  //   {global: true} // with this flag, Math.random() is overwritten with this seeded random function
+  //   // ensuring that I don't need to do any rewrites in the code below :D
 
-    // if the original Math.random is needed at any point, it can be restored with seed.resetGlobal()
-  )
+  //   // if the original Math.random is needed at any point, it can be restored with seed.resetGlobal()
+  // )
 
-  // well, that global thing isn't working, so i'm taking matters into my own hands
-  Math.random = seed('please just work')
-  // never mind, that's completely not working
+  // // well, that global thing isn't working, so i'm taking matters into my own hands
+  // Math.random = seed('please just work')
+  // // never mind, that's completely not working
 
   gv.random = seed('this works.')
 }
@@ -89,6 +89,16 @@ ingame.prototype = {
     gv.player = game.add.sprite(32, 300, 'spaceship')
     game.physics.arcade.enable(gv.player)
     gv.player.body.collideWorldBounds = true
+
+    if (gv.player2id) gv.player2 = game.add.sprite(32, 300, 'spaceship')
+
+    gv.socket.on('updateOtherPlayer', ({xPos, yPos, xVel, yVel, alive}) => {
+      gv.player2.x = xPos
+      gv.player2.y = yPos
+      gv.player2.body.velocity.x = xVel
+      gv.player2.body.velocity.y = yVel
+      if (!alive) gv.player2.kill()
+    })
 
     gv.frameCounter = 0
   },
@@ -200,5 +210,17 @@ function submitScore() {
   newEntry.set({
     name: gv.playerName,
     score: gv.score | 0 // truncate to integer
+  })
+}
+
+function sendUpdateToP2 () {
+  // player2 just needs to know your position and velocity vector... and if you're still alive
+  // sending a volatile message in case player2 is not ready to receive it
+  gv.socket.volatile.to(gv.player2id).emit('updateOtherPlayer', {
+    xPos: gv.player.x,
+    yPos: gv.player.y,
+    xVel: gv.player.body.velocity.x,
+    yVel: gv.player.body.velocity.y,
+    alive: gv.player.alive
   })
 }

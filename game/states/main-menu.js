@@ -3,7 +3,6 @@ var gv = gameVariables
 
 import {playTitleMusic, stopTitleMusic} from '~/audio/loops'
 
-
 function mainMenu(game) { }
 
 mainMenu.prototype = {
@@ -14,6 +13,8 @@ mainMenu.prototype = {
     ]
 
     assetNames.forEach(assetName => this.game.load.image(assetName, `/img/${assetName}.png`))
+
+    gv.socket = io.connect()
   },
 
   create() {
@@ -69,7 +70,21 @@ mainMenu.prototype = {
 
         case 0:
           stopTitleMusic()
-          this.game.state.start('In game')
+          gv.player2id = null
+          this.game.state.start('In game') // one player
+
+        case 1:
+          gv.socket.emit('playerReady')
+          gv.socket.on('bothReady', otherPlayer => {
+            gv.player2id = otherPlayer
+            this.game.state.start('In game')
+          })
+
+        case 2:
+          alert('not implemented')
+
+        default:
+          alert('how did you select a non-existent menu option??')
       }
     }
   }
