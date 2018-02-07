@@ -1,11 +1,10 @@
 import React from 'react'
 
-import {Switch, Route, Redirect, BrowserRouter as Router} from 'react-router-dom'
+import {Switch, Route} from 'react-router-dom'
 
-import {Navbar, Game, About} from './components'
+import {Navbar, Game, About, Login} from './components'
 
-import {FirebaseAuth} from 'react-firebaseui'
-import firebase, {auth} from '~/fire'
+import {auth} from '~/fire'
 
 class App extends React.Component {
   constructor() {
@@ -14,25 +13,9 @@ class App extends React.Component {
     this.state = {loggedIn: false}
 
     auth.onAuthStateChanged(user => {
-        this.setState({loggedIn: !!user})
-        // console.log('logged in?', this.state.loggedIn)
+      this.setState({loggedIn: !!user})
+      // console.log('logged in?', this.state.loggedIn)
     })
-
-    this.uiConfig = {
-      signInFlow: 'popup',
-      signInOptions: [
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
-        firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        // firebase.auth.GithubAuthProvider.PROVIDER_ID
-      ],
-      callbacks: {
-        signInSuccess: () => {
-          this.setState({loggedIn: true})
-          return false
-        }
-      }
-    }
   }
 
   render() {
@@ -45,7 +28,7 @@ class App extends React.Component {
             <Route path="/" component={Game} />
           </Switch>
         </div>
-      : <FirebaseAuth uiConfig={this.uiConfig} firebaseAuth={auth} />
+      : <Login />
   }
 }
 
