@@ -37,12 +37,7 @@ leaderboard.prototype = {
       fill: 'white'
     }).setTextBounds(0, 0, 800, 600)
 
-    gv.leaderboard = database.ref('/scores').once('value')
-      .then(snapshot => Object.values(snapshot.val()))
-      .then(unsortedScores => // Display scores in descending order, as you'd expect
-        unsortedScores.sort((entry1, entry2) => entry2.score - entry1.score)
-          .slice(0,10) // Only display the top ten
-      )
+    gv.leaderboard = fetchHighScores()
       // splitting rendering into its own function made it necessary to pass in the game object
       .then(renderHighScores.bind(null, game)) 
       .catch(err =>
@@ -86,5 +81,14 @@ function renderHighScores(game, highScores) {
     }).setTextBounds(0, 0, 600, 600)
   })
 }
+
+const fetchHighScores = () =>
+  database.ref('/scores').once('value')
+    .then(snapshot => Object.values(snapshot.val()))
+    .then(unsortedScores => // Display scores in descending order, as you'd expect
+      unsortedScores.sort((entry1, entry2) => entry2.score - entry1.score)
+        .slice(0,10) // Only display the top ten
+    )
+// no catch here, but there is one where fetchHighScores is invoked above
 
 export default leaderboard

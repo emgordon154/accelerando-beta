@@ -153,16 +153,15 @@ function gameOver(game) {
     fill: 'white'
   }).setTextBounds(0, 0, 800, 600)
 
-  submitScore()
-  resetProgress()
-
+  setTimeout(submitScore, 1000)
+  setTimeout(resetProgress, 1250)
   setTimeout(() => game.state.start('Leaderboard'), 1500)
 }
 
 function submitScore() {
   const newEntry = database.ref('/scores').push() // do NOT forget the .push() or you'll overwrite the leaderboard!!
   newEntry.set({
-    name: 'player',
+    name: window.prompt('What name would you like to appear on the leaderboard?') || 'anonymous',
     score: gv.score
   })
 }
