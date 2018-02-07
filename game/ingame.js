@@ -4,6 +4,8 @@ var gv = gameVariables
 import {Tone} from '~/audio'
 import {startBpm, beginPsytrance, addGuitar, addHat, stopPsytrance} from '~/audio/loops'
 
+import {database} from '~/fire'
+
 function ingame(game) { }
 
 ingame.prototype = {
@@ -151,7 +153,16 @@ function gameOver(game) {
     fill: 'white'
   }).setTextBounds(0, 0, 800, 600)
 
+  submitScore()
   resetProgress()
 
   setTimeout(() => game.state.start('Leaderboard'), 1500)
+}
+
+function submitScore() {
+  const newEntry = database.ref('/scores').push() // do NOT forget the .push() or you'll overwrite the leaderboard!!
+  newEntry.set({
+    name: 'player',
+    score: gv.score
+  })
 }

@@ -49,36 +49,4 @@ class App extends React.Component {
   }
 }
 
-// const uiConfig = {
-//   signInFlow: 'popup',
-//   signInOptions: [
-//     firebase.auth.EmailAuthProvider.PROVIDER_ID,
-//     firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-//     firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-//     // firebase.auth.GithubAuthProvider.PROVIDER_ID
-//   ],
-//   signInSuccessUrl: '/'
-// }
-
-// const Login = () => (
-  
-// )
-
-// auth.onAuthStateChanged(user => {
-//   loggedIn = !!user
-//   console.log("logged in? ",loggedIn)
-// })
-
-// const App = () => (
-//   loggedIn
-//   ? <div>
-//       <Navbar />
-//       <Switch>
-//         <Route path="/about" component={About} />
-//         <Route path="/" component={Game} />
-//       </Switch>
-//     </div>
-//   : <Login />
-// )
-
 export default App

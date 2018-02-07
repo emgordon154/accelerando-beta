@@ -1,3 +1,6 @@
+// this file is not used and possibly needs deletion.
+// this functionality has been moved to App.jsx for ease of state handling.
+
 import React from 'react'
 import {FirebaseAuth} from 'react-firebaseui'
 import firebase from '~/fire'
