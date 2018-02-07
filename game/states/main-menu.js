@@ -68,23 +68,24 @@ mainMenu.prototype = {
     if (gv.spacebar.justPressed()) {
       switch (gv.selectedMenuOption) {
 
-        case 0:
+        case 0: // Single Player
           stopTitleMusic()
           gv.player2id = null
           this.game.state.start('In game') // one player
 
-        case 1:
+        case 1: // Online Multiplayer
           gv.socket.emit('playerReady')
           gv.socket.on('bothReady', otherPlayer => {
             gv.player2id = otherPlayer
             this.game.state.start('In game')
           })
 
-        case 2:
-          alert('not implemented')
+        // why are these two things triggering whenever option 1 is selected??
+        // case 2:
+        //   alert('not implemented')
 
-        default:
-          alert('how did you select a non-existent menu option??')
+        // default:
+        //   alert('how did you select a non-existent menu option??')
       }
     }
   }

@@ -121,6 +121,9 @@ ingame.prototype = {
       gv.player.body.velocity.x = 400 * (gv.cursors.right.isDown - gv.cursors.left.isDown)
       gv.player.body.velocity.y = 300 * (gv.cursors.down.isDown - gv.cursors.up.isDown) // lmao "up.isDown"
     }
+
+    if (gv.frameCounter % 10 == 0) // send updates six times a second?
+      sendUpdateToP2()
     
     if (gv.player.alive && gv.frameCounter % game.time.fps == 0) { // do this every second, not every frame
       gv.secondsElapsed = gv.frameCounter / game.time.fps
