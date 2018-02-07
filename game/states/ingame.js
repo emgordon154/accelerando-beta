@@ -6,6 +6,25 @@ import {startBpm, beginPsytrance, addGuitar, addHat, stopPsytrance} from '~/audi
 
 import {database} from '~/fire'
 
+import seed from 'seed-random'
+
+function reseedRandomness() {
+  seed(
+    'You know what they say... all toasters toast toast!', // I had to choose an arbitrary string, so I chose a meme
+    {global: true} // with this flag, Math.random() is overwritten with this seeded random function
+    // ensuring that I don't need to do any rewrites in the code below :D
+
+    // if the original Math.random is needed at any point, it can be restored with seed.resetGlobal()
+  )
+
+  // well, that global thing isn't working, so i'm taking matters into my own hands
+  Math.random = seed('please just work')
+  // never mind, that's completely not working
+
+  gv.random = seed('this works.')
+}
+
+
 function ingame(game) { }
 
 ingame.prototype = {
@@ -31,15 +50,18 @@ ingame.prototype = {
       )
 
       game.time.advancedTiming = true // necessary to track frames per second
+
+      resetProgress() // I'm calling this all over the place because i'm so desperate for it to work properly
   },
   create () {
     const game = this.game
 
+    resetProgress()
+    reseedRandomness()
     beginPsytrance()
 
     game.physics.startSystem(Phaser.Physics.ARCADE)
 
-    resetProgress()
 
     gv.background = game.add.tileSprite(0, 0, 800, 600, 'space')
     gv.background.autoScroll(gv.currentVelocity, 0) // background moves left at 5px/s
@@ -115,38 +137,42 @@ ingame.prototype = {
 export default ingame
 
 function bigAsteroid () {
-  let astSprite = ['med-ast', 'big-ast'][Math.random()*2|0]
-  let astY = 50 + Math.random()*700 | 0
+  let astSprite = ['med-ast', 'big-ast'][gv.random()*2|0]
+  let astY = 50 + gv.random()*700 | 0
   let asteroid = gv.asteroids.create(800, astY, astSprite)
-  asteroid.body.velocity.x = 20 + gv.currentVelocity * Math.random()
-  asteroid.body.velocity.y = Math.random() * 100 - Math.random() * 100
+  asteroid.body.velocity.x = 20 + gv.currentVelocity * gv.random()
+  asteroid.body.velocity.y = gv.random() * 100 - gv.random() * 100
   asteroid.outOfBoundsKill = true
-  asteroid.rotation = Math.random() - Math.random()
+  asteroid.rotation = gv.random() - gv.random()
 }
 
 function tinyAsteroids () {
   for (let i=0; i<3; i++) {
-    let astY = 50 + Math.random()*700 | 0
+    let astY = 50 + gv.random()*700 | 0
     let asteroid = gv.asteroids.create(800, astY, 'tiny-ast')
-    asteroid.body.velocity.x = 20 + gv.currentVelocity * 0.75 * Math.random()
-    asteroid.body.velocity.y = Math.random() * 100 - Math.random() * 100
+    asteroid.body.velocity.x = 20 + gv.currentVelocity * 0.75 * gv.random()
+    asteroid.body.velocity.y = gv.random() * 100 - gv.random() * 100
     asteroid.outOfBoundsKill = true
-    asteroid.rotation = Math.random() - Math.random()
+    asteroid.rotation = gv.random() - gv.random()
   }
 }
 
 function resetProgress() {
-  gv.startVelocity = -5 // 5 px/s left
-  gv.maxVelocity = -1200
-  gv.tMax = 20 // 120 seconds to max velocity
-  gv.acceleration = (gv.maxVelocity - gv.startVelocity) / gv.tMax
+  reseedRandomness() //can you tell how desperate I am for the bugs to stop??
+  if (gv.asteroids) gv.asteroids.kill()
+  gv.startVelocity = -5 // negative px/s left
+  gv.maxVelocity = -1200 // negative px/s left
+  gv.tMax = 60 // time (in seconds) to max velocity
+  gv.acceleration = (gv.maxVelocity - gv.startVelocity) / gv.tMax // px/s/s
   gv.currentVelocity = gv.startVelocity
-  gv.score = 0
+  gv.score = 0 // unitless
   gv.secondsElapsed = 0
-  Tone.Transport.bpm.value = startBpm
+  // Tone.Transport.bpm.value = startBpm
+  Tone.Transport.bpm.rampTo(startBpm, 0.01) // setting it directly isn't working, so maybe this will work instead???
+  // won't let me use 0 as the time argument though, because can't divide by zero.
   gv.maxBPM = 140
   gv.bpmAccel = (gv.maxBPM - Tone.Transport.bpm.value) / gv.tMax
-
+  gv.frameCounter = 0
 }
 
 function gameOver(game) {
