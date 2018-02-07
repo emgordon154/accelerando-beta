@@ -29,6 +29,8 @@ ingame.prototype = {
       spritesheetNames.forEach(spritesheetName =>
         game.load.spritesheet(`${spritesheetName}`, `/img/${spritesheetName}.png`, 64, 64)
       )
+
+      game.time.advancedTiming = true // necessary to track frames per second
   },
   create () {
     const game = this.game
@@ -65,37 +67,45 @@ ingame.prototype = {
     gv.player = game.add.sprite(32, 300, 'spaceship')
     game.physics.arcade.enable(gv.player)
     gv.player.body.collideWorldBounds = true
+
+    gv.frameCounter = 0
   },
   update () {
     const game = this.game
 
-    gv.hitAsteroid = game.physics.arcade.collide(gv.player, gv.asteroids)
-    if (gv.hitAsteroid) {
+    gv.frameCounter++
+    
+    if (game.physics.arcade.collide(gv.player, gv.asteroids)) {
       gameOver(game)
     }
-
-    if (gv.player.alive && Date.now() - gv.startTime > gv.secondsElapsed * 1000) {
-      gv.secondsElapsed++
-
-      if (gv.secondsElapsed < gv.tMax) {
-        gv.currentVelocity += gv.acceleration // sorry about the confusing signs :/
-        gv.background.autoScroll(gv.currentVelocity, 0)
-        Tone.Transport.bpm.rampTo(Tone.Transport.bpm.value + gv.bpmAccel, 1)
-      }
+    
+    if (gv.player.alive) { // update score, score display, and BPM display every frame
       gv.bpmDisplay.setText(`BPM: ${Tone.Transport.bpm.value.toFixed(1)}`)
-      gv.score -= gv.currentVelocity
-      gv.scoreDisplay.setText(`SCORE: ${gv.score|0} `) // round to integer
+      // currentVelocity is negative and measured in units/second
+      // and Phaser runs at 60 frames per second
+      gv.score -= (gv.currentVelocity / game.time.fps)
+      if (gv.score == Infinity) gv.score = 0 // bug fix :/
+      gv.scoreDisplay.setText(`SCORE: ${gv.score|0} `) // truncate to integer
+      gv.player.body.velocity.x = 400 * (gv.cursors.right.isDown - gv.cursors.left.isDown)
+      gv.player.body.velocity.y = 300 * (gv.cursors.down.isDown - gv.cursors.up.isDown) // lmao "up.isDown"
+    }
+    
+    if (gv.player.alive && gv.frameCounter % game.time.fps == 0) { // do this every second, not every frame
+      gv.secondsElapsed = gv.frameCounter / game.time.fps
+      if (gv.secondsElapsed < gv.tMax) {
+        gv.currentVelocity += gv.acceleration
+        gv.background.autoScroll(gv.currentVelocity, 0)
+        Tone.Transport.bpm.rampTo(Tone.Transport.bpm.value + gv.bpmAccel, 1) // ramp it up over the next second
+      }
 
-      bigAsteroid()
-  
+      bigAsteroid() // spawn a big asteroid every second
+      // and once BPM's over 130, spawn three little ones in addition to the big one every second!
       if (Tone.Transport.bpm.value > 130) tinyAsteroids()
     }
     
     if (!gv.hatOn && Tone.Transport.bpm.value > 130) addHat()
     if (!gv.guitarOn && Tone.Transport.bpm.value > 115) addGuitar()
 
-    gv.player.body.velocity.x = 400 * (gv.cursors.right.isDown - gv.cursors.left.isDown)
-    gv.player.body.velocity.y = 300 * (gv.cursors.down.isDown - gv.cursors.up.isDown) // lmao "up.isDown"
   },
   shutdown () {
     resetProgress()
@@ -160,8 +170,9 @@ function gameOver(game) {
 
 function submitScore() {
   const newEntry = database.ref('/scores').push() // do NOT forget the .push() or you'll overwrite the leaderboard!!
+  gv.playerName = window.prompt('Nice flying, pilot! What is your name, for the leaderboard?').slice(0,20) || 'anonymous'
   newEntry.set({
-    name: window.prompt('What name would you like to appear on the leaderboard?') || 'anonymous',
-    score: gv.score
+    name: gv.playerName,
+    score: gv.score | 0 // truncate to integer
   })
 }
