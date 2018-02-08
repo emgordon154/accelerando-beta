@@ -42,7 +42,11 @@ mainMenu.prototype = {
       }).setTextBounds(0,0,800,600)
 
       menuOption.inputEnabled = true
+
+      return menuOption
     })
+
+    console.log('menu options at create', gv.menuOptions)
 
     gv.player = game.add.sprite(200, 400, 'spaceship')
 
@@ -67,7 +71,14 @@ mainMenu.prototype = {
 
     gv.player.y = 400 + gv.selectedMenuOption * 40
 
-    if (gv.spacebar.justPressed()) {
+    gv.menuOptions.forEach((option, position) => {
+      if (option.input.checkPointerOver(game.input.activePointer)) { 
+        gv.selectedMenuOption = position
+      }
+    })
+
+    // if the spacebar is pressed, or a menu option is clicked
+    if (gv.spacebar.justPressed() || gv.menuOptions.some(option => option.input.checkPointerDown(game.input.activePointer))) {
       switch (gv.selectedMenuOption) {
 
         case 0: // Single Player
