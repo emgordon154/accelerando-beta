@@ -46,8 +46,6 @@ mainMenu.prototype = {
       return menuOption
     })
 
-    console.log('menu options at create', gv.menuOptions)
-
     gv.player = game.add.sprite(200, 400, 'spaceship')
 
     gv.selectedMenuOption = 0
