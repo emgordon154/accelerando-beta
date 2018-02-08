@@ -1,15 +1,17 @@
 import gameVariables from '../variables'
 var gv = gameVariables
 
+import {loadImages} from '../loaders'
+
 function splashScreen(game) { }
 
 splashScreen.prototype = {
   preload() {
-    const assetNames = [
-      'space', // https://opengameart.org/content/space-backdrop
-    ]
+    loadImages('space')(this.game)
 
-    assetNames.forEach(assetName => this.game.load.image(assetName, `/img/${assetName}.png`))
+    gv.socket = io.connect(window.location.origin)
+    // Don't worry, io isn't undefined, it's loaded into the global scope
+    // from an external file before bundle.js is loaded
   },
 
   create() {

@@ -1,6 +1,8 @@
 import gameVariables from '../variables'
 var gv = gameVariables
 
+import {loadImages} from '../loaders'
+
 import {database} from '~/fire'
 
 function leaderboard(game) { }
@@ -13,11 +15,7 @@ function leaderboard(game) { }
 
 leaderboard.prototype = {
   preload()  {
-    const assetNames = [
-      'space', // https://opengameart.org/content/space-backdrop
-    ]
-
-    assetNames.forEach(assetName => this.game.load.image(assetName, `/img/${assetName}.png`))
+    loadImages('space')(this.game)
   },
 
   create() {

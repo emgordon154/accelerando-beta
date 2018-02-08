@@ -1,6 +1,8 @@
 import gameVariables from '../variables'
 var gv = gameVariables
 
+import {loadImages} from '../loaders'
+
 import {Tone} from '~/audio'
 import {startBpm, beginPsytrance, addGuitar, addHat, stopPsytrance} from '~/audio/loops'
 
@@ -30,26 +32,10 @@ function ingame(game) { }
 ingame.prototype = {
   preload () {
       const game = this.game
-
-      const spriteNames = [
-        'space', // https://opengameart.org/content/space-backdrop
-        'spaceship', // https://opengameart.org/content/space-ships-side-scroller
-        'tiny-ast', // https://opengameart.org/content/2d-asteroid-sprite
-        'med-ast', // https://opengameart.org/content/2d-asteroid-sprite
-        'big-ast', // https://opengameart.org/content/2d-asteroid-sprite
-      ]
-  
-      spriteNames.forEach(spriteName => game.load.image(spriteName, `/img/${spriteName}.png`))
-
-      const spritesheetNames = [
-        'explosion' // https://opengameart.org/content/explosion
-      ]
-
-      spritesheetNames.forEach(spritesheetName =>
-        game.load.spritesheet(`${spritesheetName}`, `/img/${spritesheetName}.png`, 64, 64)
-      )
-
       game.time.advancedTiming = true // necessary to track frames per second
+
+      loadImages('space', 'spaceship', 'big-ast', 'med-ast', 'tiny-ast')(game)
+      game.load.spritesheet('explosion', '/img/explosion.png', 64, 64)
 
       resetProgress() // I'm calling this all over the place because i'm so desperate for it to work properly
   },

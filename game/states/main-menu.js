@@ -3,20 +3,15 @@
 import gameVariables from '../variables'
 var gv = gameVariables
 
+import {loadImages} from '../loaders'
+
 import {playTitleMusic, stopTitleMusic} from '~/audio/loops'
 
 function mainMenu(game) { }
 
 mainMenu.prototype = {
   preload() {
-    const assetNames = [
-      'space', // https://opengameart.org/content/space-backdrop
-      'spaceship', // https://opengameart.org/content/space-ships-side-scroller
-    ]
-
-    assetNames.forEach(assetName => this.game.load.image(assetName, `/img/${assetName}.png`))
-
-    gv.socket = io.connect(window.location.origin)
+    loadImages('space', 'spaceship')(this.game)
   },
 
   create() {
@@ -25,6 +20,7 @@ mainMenu.prototype = {
     playTitleMusic()
     
     gv.background = game.add.tileSprite(0, 0, 800, 600, 'space')
+
     gv.title = game.add.text(0, 200, 'ACCELERANDO', {
       boundsAlignH: 'center',
       font: '24pt Monaco',
@@ -38,13 +34,15 @@ mainMenu.prototype = {
       'Sound Test',
     ]
 
-    gv.menuOptions = choices.map((choice, position) =>
-      game.add.text(0, 400 + position * 40, choice, {
+    gv.menuOptions = choices.map((choice, position) => {
+      const menuOption = game.add.text(0, 400 + position * 40, choice, {
         boundsAlignH: 'center',
         font: '14pt Monaco',
         fill: 'white'
       }).setTextBounds(0,0,800,600)
-    )
+
+      menuOption.inputEnabled = true
+    })
 
     gv.player = game.add.sprite(200, 400, 'spaceship')
 
@@ -56,15 +54,15 @@ mainMenu.prototype = {
   },
 
   update() {
+    const game = this.game
+
     if (gv.cursors.up.justPressed()) {
       gv.selectedMenuOption = gv.selectedMenuOption - 1
       if (gv.selectedMenuOption < 0) gv.selectedMenuOption = 2
-      console.log('selectedMenuOption: ', gv.selectedMenuOption)
     }
 
     if (gv.cursors.down.justPressed()) {
       gv.selectedMenuOption = (gv.selectedMenuOption + 1) % gv.menuOptions.length
-      console.log('selectedMenuOption: ', gv.selectedMenuOption)
     }
 
     gv.player.y = 400 + gv.selectedMenuOption * 40
@@ -73,32 +71,38 @@ mainMenu.prototype = {
       switch (gv.selectedMenuOption) {
 
         case 0: // Single Player
-          stopTitleMusic()
-          gv.player2id = null
-          this.game.state.start('In game') // one player
+          startSinglePlayer(game)
           break
 
         case 1: // Online Multiplayer
-          gv.socket.emit('playerReady')
-          console.log('playerReady signal sent')
-          gv.socket.on('bothReady', otherPlayer => {
-            console.log('bothReady signal received')
-            gv.player2id = otherPlayer
-            this.game.state.start('In game')
-          })
+          startMultiplayer(game)
           break
 
-        // why are these two things triggering whenever option 1 is selected??
-        // case 2:
-        //   alert('not implemented')
-        //   break
+        case 2: // Sound Test
+          alert('not implemented')
+          break
 
         default:
           alert('how did you select a non-existent menu option??')
-          
       }
     }
   }
+}
+
+function startSinglePlayer(game) {
+  stopTitleMusic()
+  gv.player2id = null
+  game.state.start('In game') // one player
+}
+
+function startMultiplayer(game) {
+  gv.socket.emit('playerReady')
+  console.log('playerReady signal sent')
+  gv.socket.on('bothReady', otherPlayer => {
+    console.log('bothReady signal received')
+    gv.player2id = otherPlayer
+    game.state.start('In game')
+  })
 }
 
 export default mainMenu
