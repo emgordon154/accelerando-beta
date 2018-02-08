@@ -87,8 +87,10 @@ export function playTitleMusic() {
   Tone.Transport.timeSignature = 4
   Tone.Transport.swing = .2
   Tone.Transport.bpm.value = titleBPM
+  Tone.Transport.bpm.rampTo(titleBPM, 0.01) // setting it directly doesn't seem to work?
   Tone.Transport.loop = true
   Tone.Transport.loopEnd = loopLength
+
   titleMusic.mute = false
   titleMusic.start('1m').stop(loopLength)
   Tone.Transport.start()
@@ -96,8 +98,9 @@ export function playTitleMusic() {
 
 export function stopTitleMusic() {
   Tone.Transport.stop()
+  Tone.Transport.cancel(-Infinity)
   titleMusic.stop()
-  titleMusic.cancel()
+  titleMusic.cancel(-Infinity)
   titleMusic.mute = true
-  // how do you stop this loop?!!?
+  // titleMusic.dispose() // I'm just trying everything I can
 }

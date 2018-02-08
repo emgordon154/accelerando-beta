@@ -151,7 +151,7 @@ function bigAsteroid () {
 
 function tinyAsteroids () {
   for (let i=0; i<3; i++) {
-    let astY = 50 + gv.random()*700 | 0
+    let astY = 50 + gv.random()*500 | 0
     let asteroid = gv.asteroids.create(800, astY, 'tiny-ast')
     asteroid.body.velocity.x = 20 + gv.currentVelocity * 0.75 * gv.random()
     asteroid.body.velocity.y = gv.random() * 100 - gv.random() * 100
@@ -162,7 +162,7 @@ function tinyAsteroids () {
 
 function resetProgress() {
   reseedRandomness() //can you tell how desperate I am for the bugs to stop??
-  if (gv.asteroids) gv.asteroids.kill()
+  if (gv.asteroids) gv.asteroids.destroy()
   gv.startVelocity = -5 // negative px/s left
   gv.maxVelocity = -1200 // negative px/s left
   gv.tMax = 60 // time (in seconds) to max velocity
@@ -199,7 +199,8 @@ function gameOver(game) {
 
 function submitScore() {
   const newEntry = database.ref('/scores').push() // do NOT forget the .push() or you'll overwrite the leaderboard!!
-  gv.playerName = window.prompt('Nice flying, pilot! What is your name, for the leaderboard?').slice(0,20) || 'anonymous'
+  gv.playerName = window.prompt('Nice flying, pilot! What is your name, for the leaderboard?') || 'anonymous'
+  gv.playerName = gv.playerName.slice(0,20) // It looks hilarious but unprofessional to have names spill over the scores
   newEntry.set({
     name: gv.playerName,
     score: gv.score | 0 // truncate to integer

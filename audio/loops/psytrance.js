@@ -78,10 +78,12 @@ export function beginPsytrance() {
   Tone.Transport.stop()
   Tone.Transport.cancel(-1)
   Tone.Transport.bpm.value = startBpm
+  Tone.Transport.bpm.rampTo(startBpm, 0.01) // setting it directly doesn't seem to work?
   Tone.Transport.timeSignature = 4
   Tone.Transport.swing = 0.1
   Tone.Transport.loop = true
   Tone.Transport.loopEnd = loopLength; // necessary semicolon
+  
   [bassLoop, drumLoop, padLoop, guitarLoop, hatLoop]
     .forEach(subloop => {
       subloop.start(0).stop(loopLength)
@@ -94,12 +96,14 @@ export function beginPsytrance() {
 }
 
 export function stopPsytrance() {
-  Tone.Transport.stop();
-  [bassLoop, hatLoop, drumLoop, padLoop, guitarLoop, hatLoop]
+  Tone.Transport.stop()
+  Tone.Transport.cancel(-Infinity);
+  [bassLoop, drumLoop, padLoop, guitarLoop, hatLoop]
     .forEach(subloop => {
       subloop.stop()
-      subloop.cancel()
+      subloop.cancel(-Infinity)
       subloop.mute = true
+      // subloop.dispose() // I'm just trying everything i can
     })
   // how do you stop this loop?!!?
 }
