@@ -89,7 +89,7 @@ mainMenu.prototype = {
           break
 
         case 2: // Sound Test
-          gv.menuOptions[0].setText('Coming soon!')
+          gv.menuOptions[2].setText('Coming soon!')
           // alert('not implemented')
           break
 

@@ -92,7 +92,7 @@ export function playTitleMusic() {
   Tone.Transport.loopEnd = loopLength
 
   titleMusic.mute = false
-  titleMusic.start('1m').stop(loopLength)
+  titleMusic.start().stop(loopLength)
   Tone.Transport.start()
 }
 
