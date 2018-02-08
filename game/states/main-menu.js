@@ -84,15 +84,17 @@ mainMenu.prototype = {
           break
 
         case 1: // Online Multiplayer
-          startMultiplayer(game)
+          gv.menuOptions[1].setText('Coming soon!')
+          // startMultiplayer(game)
           break
 
         case 2: // Sound Test
-          alert('not implemented')
+          gv.menuOptions[0].setText('Coming soon!')
+          // alert('not implemented')
           break
 
         default:
-          alert('how did you select a non-existent menu option??')
+          console.error('how did you select a non-existent menu option??')
       }
     }
   }
