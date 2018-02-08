@@ -127,11 +127,11 @@ ingame.prototype = {
     }
 
     if (gv.player2id && gv.frameCounter % 10 == 0) // send updates six times a second?
-      sendUpdateToP2()
+      sendUpdateToP2() // send player 2 your current position, velocity, and aliveness
     
     if (gv.player.alive && gv.frameCounter % game.time.fps == 0) { // do this every second, not every frame
       gv.secondsElapsed = gv.frameCounter / game.time.fps
-      if (gv.secondsElapsed < gv.tMax) {
+      if (gv.secondsElapsed < gv.tMax) { // we gotta have some speed limit!
         gv.currentVelocity += gv.acceleration
         gv.background.autoScroll(gv.currentVelocity, 0)
         Tone.Transport.bpm.rampTo(Tone.Transport.bpm.value + gv.bpmAccel, 1) // ramp it up over the next second
