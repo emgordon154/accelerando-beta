@@ -171,7 +171,7 @@ function tinyAsteroids () {
     asteroid.body.velocity.y = gv.random() * 100 - gv.random() * 100
     asteroid.outOfBoundsKill = true
     asteroid.rotation = gv.random() - gv.random()
-  }
+  }  
 }
 
 function resetProgress() {
