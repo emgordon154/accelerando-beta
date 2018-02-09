@@ -90,11 +90,10 @@ mainMenu.prototype = {
 
         case 2: // Sound Test
           gv.menuOptions[2].setText('Coming soon!')
-          // alert('not implemented')
           break
 
         default:
-          console.error('how did you select a non-existent menu option??')
+          console.error('non-existent menu option selected?')
       }
     }
   }
