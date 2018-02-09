@@ -28,9 +28,9 @@ class Navbar extends React.Component {
           <Link to="/" className="navlink">
             Game
           </Link>
-          <Link to="/about" className="navlink">
+          {/* <Link to="/about" className="navlink">
             About
-          </Link>
+          </Link> */}
           <a onClick={signOut} className="navlink">
             Sign out
           </a>
