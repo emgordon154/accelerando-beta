@@ -10,12 +10,10 @@ class Game extends React.Component {
     this.state = {loggedIn: false}
     auth.onAuthStateChanged(user => {
       this.setState({loggedIn: !!user})
-      // console.log('logged in?', this.state.loggedIn)
     })
   }
 
   componentDidUpdate () {
-    // console.log('game component updated')
     if (this.state.loggedIn && !this.state.game) this.setState({game: createGame()})
   }
 

@@ -93,7 +93,7 @@ mainMenu.prototype = {
           break
 
         default:
-          console.error('non-existent menu option selected?')
+          // console.error('non-existent menu option selected?')
       }
     }
   }
@@ -107,9 +107,9 @@ function startSinglePlayer(game) {
 
 function startMultiplayer(game) {
   gv.socket.emit('playerReady')
-  console.log('playerReady signal sent')
+  // console.log('playerReady signal sent')
   gv.socket.on('bothReady', otherPlayer => {
-    console.log('bothReady signal received')
+    // console.log('bothReady signal received')
     gv.player2id = otherPlayer
     game.state.start('In game')
   })

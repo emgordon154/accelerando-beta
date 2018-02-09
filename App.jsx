@@ -14,12 +14,10 @@ class App extends React.Component {
 
     auth.onAuthStateChanged(user => {
       this.setState({loggedIn: !!user})
-      // console.log('logged in?', this.state.loggedIn)
     })
   }
 
   render() {
-    // console.log(auth)
     return this.state.loggedIn
       ? <div>
           <Navbar />

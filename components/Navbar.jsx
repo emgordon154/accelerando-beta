@@ -6,7 +6,7 @@ import {auth} from '~/fire'
 function signOut () {
   auth.signOut()
     .then(() => {
-      console.log('signed out successfully')
+      // console.log('signed out successfully')
       // window.location.reload()
     })
     .catch(err => console.error(err))
@@ -20,7 +20,6 @@ class Navbar extends React.Component {
 
     auth.onAuthStateChanged(user => {
         this.setState({loggedIn: !!user})
-        // console.log('logged in?', this.state.loggedIn)
     })
   }
   render () {
